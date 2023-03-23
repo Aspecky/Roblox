@@ -13,10 +13,10 @@ local Sweeper = {}
 
 local function cleanObject(object)
 	local type = typeof(object)
-	if type == "Instance" then
-		Destroy(object)
-	elseif type == "RBXScriptConnection" then
+	if type == "RBXScriptConnection" then
 		Disconnect(object)
+	elseif type == "Instance" then
+		Destroy(object)
 	end
 end
 
@@ -40,7 +40,7 @@ end
 
 local function Sweep(self)
 	local proxy = self.proxy
-	for k, object in pairs(self.proxy) do
+	for k, object in pairs(proxy) do
 		cleanObject(object)
 		proxy[k] = nil
 	end
