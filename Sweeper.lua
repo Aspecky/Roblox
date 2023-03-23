@@ -3,7 +3,7 @@ export type Sweeper = {
 	Sweep: (Sweeper) -> nil,
 }
 
-local conn = game.Destroying:Once(function() end)
+local conn = game.Destroying:Connect(function() end)
 conn:Disconnect()
 
 local Disconnect = conn.Disconnect
@@ -11,16 +11,20 @@ local Destroy = game.Destroy
 
 local Sweeper = {}
 
+local function cleanObject(object)
+	local type = typeof(object)
+	if type == "Instance" then
+		Destroy(object)
+	elseif type == "RBXScriptConnection" then
+		Disconnect(object)
+	end
+end
+
 local function newindex(self, k, v)
 	local proxy = self.proxy
 	local object = proxy[k]
 	if object then
-		local type = typeof(object)
-		if type == "Instance" then
-			Destroy(object)
-		elseif type == "RBXScriptConnection" then
-			Disconnect(object)
-		end
+		cleanObject(object)
 	end
 	proxy[k] = v
 end
@@ -37,12 +41,7 @@ end
 local function Sweep(self)
 	local proxy = self.proxy
 	for k, object in pairs(self.proxy) do
-		local type = typeof(object)
-		if type == "Instance" then
-			Destroy(object)
-		elseif type == "RBXScriptConnection" then
-			Disconnect(object)
-		end
+		cleanObject(object)
 		proxy[k] = nil
 	end
 end
