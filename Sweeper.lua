@@ -3,7 +3,10 @@ export type Sweeper = {
 	Sweep: (Sweeper) -> nil,
 }
 
-local Disconnect = game.Destroying:Once().Disconnect
+local conn = game.Destroying:Once(function() end)
+conn:Disconnect()
+
+local Disconnect = conn.Disconnect
 local Destroy = game.Destroy
 
 local Sweeper = {}
